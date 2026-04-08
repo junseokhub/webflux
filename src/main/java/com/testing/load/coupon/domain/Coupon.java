@@ -1,6 +1,7 @@
 package com.testing.load.coupon.domain;
 
 import com.testing.load.common.BaseEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -17,6 +18,7 @@ public class Coupon extends BaseEntity {
     private int totalStock;
     private int remainingStock;
 
+    @Builder
     public Coupon(String name, int totalStock) {
         this.name = name;
         this.totalStock = totalStock;

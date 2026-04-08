@@ -1,5 +1,6 @@
 package com.testing.load.auth;
 
+import com.testing.load.auth.dto.LoginAuthResponse;
 import com.testing.load.auth.dto.LoginRequest;
 import com.testing.load.auth.dto.RegisterRequest;
 import com.testing.load.auth.dto.TokenResponse;
@@ -41,7 +42,7 @@ public class AuthController {
     // 2. refreshToken → HttpOnly Cookie
     // 3. accessToken만 바디에
     @PostMapping("/login")
-    public Mono<ResponseEntity<TokenResponse>> login(
+    public Mono<ResponseEntity<LoginAuthResponse>> login(
             @RequestBody LoginRequest request,
             ServerWebExchange exchange) {
         return authService.login(request.getUsername(), request.getPassword())
@@ -50,7 +51,7 @@ public class AuthController {
                             result.refreshToken(),
                             Duration.ofMillis(jwtProperties.refreshTokenExpiration())
                     ));
-                    return ResponseEntity.ok(new TokenResponse(result.accessToken()));
+                    return ResponseEntity.ok(new LoginAuthResponse(result.user().getId(), result.user().getUsername(), result.accessToken()));
                 });
     }
 

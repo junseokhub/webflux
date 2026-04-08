@@ -1,5 +1,6 @@
 package com.testing.load.auth;
 
+import com.testing.load.auth.dto.LoginTokenResult;
 import com.testing.load.auth.dto.TokenResult;
 import com.testing.load.common.exception.BusinessException;
 import com.testing.load.common.exception.ErrorCode;
@@ -52,7 +53,7 @@ public class AuthService {
     // 3. 액세스 + 리프레시 토큰 발급
     // 4. 리프레시 토큰 Redis 저장
     @Transactional(readOnly = true)
-    public Mono<TokenResult> login(String username, String password) {
+    public Mono<LoginTokenResult> login(String username, String password) {
         return userRepository.findByUsername(username)
                 .switchIfEmpty(Mono.error(new BusinessException(ErrorCode.USER_NOT_FOUND)))
                 .flatMap(user -> {
@@ -62,7 +63,7 @@ public class AuthService {
                     String accessToken = jwtProvider.generateAccessToken(user.getId());
                     // saveRefreshToken → 공통 메서드로 분리 (로그인/재발급 공통 사용)
                     return saveRefreshToken(user.getId())
-                            .map(refreshToken -> new TokenResult(accessToken, refreshToken));
+                            .map(refreshToken -> new LoginTokenResult(accessToken,refreshToken, user));
                 });
     }
 

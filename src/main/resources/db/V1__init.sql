@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS coupon_issues
     id        BIGINT AUTO_INCREMENT PRIMARY KEY,
     coupon_id BIGINT      NOT NULL,
     user_id   BIGINT      NOT NULL,
-    issued_at DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6),
+    created_at      DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6),
     UNIQUE KEY uk_coupon_user (coupon_id, user_id),
     FOREIGN KEY (coupon_id) REFERENCES coupons (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
