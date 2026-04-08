@@ -7,8 +7,10 @@ import com.testing.load.common.exception.ErrorCode;
 import com.testing.load.common.jwt.JwtProvider;
 import com.testing.load.common.jwt.TokenBlacklistService;
 import com.testing.load.common.properties.JwtProperties;
+import com.testing.load.user.Role;
+import com.testing.load.user.User;
 import com.testing.load.user.UserRepository;
-import com.testing.load.user.domain.User;
+import com.testing.load.user.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
@@ -60,10 +62,10 @@ public class AuthService {
                     if (!passwordEncoder.matches(password, user.getPassword())) {
                         return Mono.error(new BusinessException(ErrorCode.PASSWORD_MISMATCH));
                     }
-                    String accessToken = jwtProvider.generateAccessToken(user.getId());
+                    String accessToken = jwtProvider.generateAccessToken(user.getId(), user.getRole());
                     // saveRefreshToken → 공통 메서드로 분리 (로그인/재발급 공통 사용)
-                    return saveRefreshToken(user.getId())
-                            .map(refreshToken -> new LoginTokenResult(accessToken,refreshToken, user));
+                    return saveRefreshToken(user.getId(), user.getRole())
+                            .map(refreshToken -> new LoginTokenResult(accessToken,refreshToken, UserResponseDto.from(user)));
                 });
     }
 
@@ -101,17 +103,19 @@ public class AuthService {
         return reactiveRedisTemplate.opsForValue()
                 .get(REFRESH_TOKEN_PREFIX + userId)
                 .switchIfEmpty(Mono.error(new BusinessException(ErrorCode.TOKEN_INVALID)))
-                .flatMap(savedToken -> {
-                    // 탈취 감지 → Redis 저장 토큰과 다르면 즉시 삭제 후 거부
-                    if (!savedToken.equals(refreshToken)) {
+                .flatMap(savedValue -> {
+                    String[] parts = savedValue.split("\\|");
+                    String storedToken = parts[0];
+                    Role role = Role.valueOf(parts[1]);
+
+                    if (!storedToken.equals(refreshToken)) {
                         return reactiveRedisTemplate.opsForValue()
                                 .delete(REFRESH_TOKEN_PREFIX + userId)
                                 .then(Mono.error(new BusinessException(ErrorCode.TOKEN_INVALID)));
                     }
 
-                    String newAccessToken = jwtProvider.generateAccessToken(userId);
-                    // Rotation → 재발급 시 리프레시 토큰도 새로 발급
-                    return saveRefreshToken(userId)
+                    String newAccessToken = jwtProvider.generateAccessToken(userId, role);
+                    return saveRefreshToken(userId, role)
                             .map(newRefreshToken -> new TokenResult(newAccessToken, newRefreshToken));
                 });
     }
@@ -119,14 +123,14 @@ public class AuthService {
     // 리프레시 토큰 저장 공통 메서드
     // 로그인/재발급 모두 동일한 로직 사용
     // Redis 저장 실패 시 예외 처리 → 로그 남기고 서버 에러 반환
-    private Mono<String> saveRefreshToken(Long userId) {
+    private Mono<String> saveRefreshToken(Long userId, Role role) {
         String refreshToken = jwtProvider.generateRefreshToken(userId);
+        String key = REFRESH_TOKEN_PREFIX + userId;
+        // JWT는 "." 구분자, Base64URL 인코딩이라 "|" 포함 안 돼요 → 안전해요
+        String value = refreshToken + "|" + role.name();
+
         return reactiveRedisTemplate.opsForValue()
-                .set(
-                        REFRESH_TOKEN_PREFIX + userId,
-                        refreshToken,
-                        Duration.ofMillis(jwtProperties.refreshTokenExpiration())
-                )
+                .set(key, value, Duration.ofMillis(jwtProperties.refreshTokenExpiration()))
                 .doOnError(e -> log.error("Redis refreshToken 저장 실패: {}", e.getMessage()))
                 .onErrorMap(e -> new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR))
                 .thenReturn(refreshToken);

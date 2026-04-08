@@ -51,7 +51,7 @@ public class AuthController {
                             result.refreshToken(),
                             Duration.ofMillis(jwtProperties.refreshTokenExpiration())
                     ));
-                    return ResponseEntity.ok(new LoginAuthResponse(result.user().getId(), result.user().getUsername(), result.accessToken()));
+                    return ResponseEntity.ok(new LoginAuthResponse(result.user().id(), result.user().username(), result.accessToken()));
                 });
     }
 

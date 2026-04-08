@@ -1,7 +1,6 @@
-package com.testing.load.user.domain;
+package com.testing.load.user;
 
 import com.testing.load.common.BaseEntity;
-import com.testing.load.user.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

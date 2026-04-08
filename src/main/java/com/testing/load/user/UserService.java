@@ -2,7 +2,6 @@ package com.testing.load.user;
 
 import com.testing.load.common.exception.BusinessException;
 import com.testing.load.common.exception.ErrorCode;
-import com.testing.load.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

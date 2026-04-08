@@ -1,6 +1,5 @@
 package com.testing.load.user;
 
-import com.testing.load.user.domain.User;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 

@@ -1,6 +1,7 @@
 package com.testing.load.coupon.domain;
 
 import com.testing.load.common.BaseEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -17,6 +18,7 @@ public class CouponIssue extends BaseEntity {
     private Long couponId;
     private Long userId;
 
+    @Builder
     public CouponIssue(Long couponId, Long userId) {
         this.couponId = couponId;
         this.userId = userId;
