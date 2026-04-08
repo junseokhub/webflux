@@ -39,12 +39,12 @@ public class JwtAuthenticationFilter implements WebFilter {
                     if (isBlacklisted) {
                         return Mono.error(new BusinessException(ErrorCode.TOKEN_INVALID));
                     }
-
+                    String role = jwtProvider.getClaims(token).get("role", String.class);
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
                                     userId,
                                     null,
-                                    List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                                    List.of(new SimpleGrantedAuthority("ROLE_" + role))
                             );
 
                     return chain.filter(exchange)

@@ -1,8 +1,9 @@
 package com.testing.load.common.jwt;
 
-import com.testing.load.common.properties.JwtProperties;
 import com.testing.load.common.exception.BusinessException;
 import com.testing.load.common.exception.ErrorCode;
+import com.testing.load.common.properties.JwtProperties;
+import com.testing.load.user.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -27,9 +28,10 @@ public class JwtProvider {
         );
     }
 
-    public String generateAccessToken(Long userId) {
+    public String generateAccessToken(Long userId, Role role) {
         return Jwts.builder()
                 .subject(String.valueOf(userId))
+                .claim("role", role.name())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtProperties.accessTokenExpiration()))
                 .signWith(secretKey)

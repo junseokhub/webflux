@@ -1,6 +1,7 @@
 package com.testing.load.user.domain;
 
 import com.testing.load.common.BaseEntity;
+import com.testing.load.user.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,12 @@ public class User extends BaseEntity {
     private Long id;
     private String username;
     private String password;
+    private Role role;
 
     @Builder
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.role = Role.USER;
     }
 }
