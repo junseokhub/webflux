@@ -1,4 +1,4 @@
-package com.testing.load.config;
+package com.testing.load.common.config;
 
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;

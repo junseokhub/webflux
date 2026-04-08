@@ -17,11 +17,13 @@ public class User {
     @Id
     private Long id;
     private String username;
+    private String password;
     @CreatedDate
     private LocalDateTime createdAt;
 
     @Builder
-    public User(String username) {
+    public User(String username, String password) {
         this.username = username;
+        this.password = password;
     }
 }
