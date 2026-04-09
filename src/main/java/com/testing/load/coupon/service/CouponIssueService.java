@@ -5,6 +5,7 @@ import com.testing.load.common.exception.ErrorCode;
 import com.testing.load.coupon.domain.CouponIssue;
 import com.testing.load.coupon.repository.CouponIssueRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Service;
@@ -64,7 +65,8 @@ public class CouponIssueService {
                                     .couponId(couponId)
                                     .userId(userId)
                                     .build()
-                    );
+                    ).onErrorMap(DuplicateKeyException.class,
+                            e -> new BusinessException(ErrorCode.COUPON_ALREADY_ISSUED));
                 });
     }
 

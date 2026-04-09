@@ -13,6 +13,7 @@ import com.testing.load.user.UserRepository;
 import com.testing.load.user.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,14 +40,13 @@ public class AuthService {
     // 회원가입
     @Transactional
     public Mono<User> register(String username, String password) {
-        return userRepository.findByUsername(username)
-                .flatMap(existing -> Mono.<User>error(new BusinessException(ErrorCode.USER_ALREADY_EXISTS)))
-                .switchIfEmpty(Mono.defer(() -> userRepository.save(
-                        User.builder()
-                                .username(username)
-                                .password(passwordEncoder.encode(password))
-                                .build()
-                )));
+        return userRepository.save(
+                User.builder()
+                        .username(username)
+                        .password(passwordEncoder.encode(password))
+                        .build()
+        ).onErrorMap(DuplicateKeyException.class,
+                e -> new BusinessException(ErrorCode.USER_ALREADY_EXISTS));
     }
 
     // 로그인
