@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -38,6 +39,12 @@ public class CouponController {
                 .map(CouponResponse::from);
     }
 
+    @GetMapping
+    public Flux<CouponResponse> findAll() {
+        return couponService.findAll()
+                .map(CouponResponse::from);
+    }
+
     // 쿠폰 발급 (USER)
     @PostMapping("/{couponId}/issue")
     @ResponseStatus(HttpStatus.CREATED)
@@ -45,5 +52,4 @@ public class CouponController {
         return userId.flatMap(id -> couponIssueService.issueCoupon(couponId, id))
                 .map(CouponIssueResponse::from);
     }
-
 }

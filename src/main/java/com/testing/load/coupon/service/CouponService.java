@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -31,6 +32,11 @@ public class CouponService {
                         .set(stockKey(coupon.getId()), String.valueOf(totalStock))
                         .thenReturn(coupon)
         );
+    }
+
+    @Transactional(readOnly = true)
+    public Flux<Coupon> findAll() {
+        return couponRepository.findAll();
     }
 
     @Transactional(readOnly = true)
