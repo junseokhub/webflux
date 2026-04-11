@@ -8,14 +8,16 @@ CREATE TABLE IF NOT EXISTS users
     updated_at DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6)
 );
 
-CREATE TABLE IF NOT EXISTS coupons
+CREATE TABLE coupons
 (
-    id              BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name            VARCHAR(100) NOT NULL,
-    total_stock     INT          NOT NULL,
-    remaining_stock INT          NOT NULL,
-    created_at      DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6),
-    updated_at DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6)
+     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+     name VARCHAR(255) NOT NULL,
+     type VARCHAR(10) NOT NULL,        -- PERCENT, FIXED, FREE
+     discount_value INT NOT NULL DEFAULT 0,  -- PERCENT: 10(%), FIXED: 5000(원), FREE: 0
+     total_stock INT NOT NULL,
+     remaining_stock INT NOT NULL,
+     created_at DATETIME(6),
+     updated_at DATETIME(6)
 );
 
 CREATE TABLE IF NOT EXISTS coupon_issues

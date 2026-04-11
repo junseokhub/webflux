@@ -23,8 +23,12 @@ public class CouponController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<CouponResponse> createCoupon(@RequestBody CouponRequest request) {
-        return couponService.createCoupon(request.name(), request.totalStock())
-                .map(CouponResponse::from);
+        return couponService.createCoupon(
+                request.name(),
+                request.type(),
+                request.discountValue(),
+                request.totalStock()
+        ).map(CouponResponse::from);
     }
 
     // 쿠폰 조회

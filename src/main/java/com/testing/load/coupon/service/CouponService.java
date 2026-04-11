@@ -18,10 +18,12 @@ public class CouponService {
     private final ReactiveRedisTemplate<String, String> reactiveRedisTemplate;
 
     @Transactional
-    public Mono<Coupon> createCoupon(String name, int totalStock) {
+    public Mono<Coupon> createCoupon(String name, String type, int discountValue, int totalStock) {
         return couponRepository.save(
                 Coupon.builder()
                         .name(name)
+                        .type(type)
+                        .discountValue(discountValue)
                         .totalStock(totalStock)
                         .build()
         ).flatMap(coupon ->
