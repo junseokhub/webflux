@@ -1,4 +1,4 @@
-package com.testing.load.common;
+package com.testing.load.common.entity;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

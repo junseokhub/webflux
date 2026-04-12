@@ -31,3 +31,29 @@ CREATE TABLE IF NOT EXISTS coupon_issues
     FOREIGN KEY (coupon_id) REFERENCES coupons (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
+CREATE TABLE products (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  price INT NOT NULL,
+  stock INT NOT NULL,
+  version INT NOT NULL DEFAULT 0,
+  created_by BIGINT NOT NULL,
+  created_at DATETIME(6),
+  updated_at DATETIME(6),
+  FOREIGN KEY (created_by) REFERENCES users(id)
+);
+
+CREATE TABLE orders (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    coupon_issue_id BIGINT,          -- 쿠폰 적용 (선택)
+    original_price INT NOT NULL,      -- 원래 가격
+    final_price INT NOT NULL,         -- 쿠폰 적용 후 가격
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    created_at DATETIME(6),
+    updated_at DATETIME(6),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);

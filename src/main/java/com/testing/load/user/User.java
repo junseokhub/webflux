@@ -1,6 +1,6 @@
 package com.testing.load.user;
 
-import com.testing.load.common.BaseEntity;
+import com.testing.load.common.entity.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
