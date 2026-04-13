@@ -1,5 +1,6 @@
 package com.testing.load.common.exception;
 
+import com.testing.load.common.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,18 +12,20 @@ import reactor.core.publisher.Mono;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleBusinessException(BusinessException e) {
+    public Mono<ResponseEntity<ApiResponse<Void>>> handleBusinessException(BusinessException e) {
         log.error("BusinessException: {}", e.getMessage(), e);
+        ErrorResponse errorResponse = new ErrorResponse(e.getStatus().value(), e.getMessage());
         return Mono.just(ResponseEntity
                 .status(e.getStatus())
-                .body(ErrorResponse.of(e.getStatus().value(), e.getMessage())));
+                .body(ApiResponse.fail(errorResponse)));
     }
 
     @ExceptionHandler(Exception.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleException(Exception e) {
+    public Mono<ResponseEntity<ApiResponse<Void>>> handleException(Exception e) {
         log.error("Exception: {}", e.getMessage(), e);
+        ErrorResponse errorResponse = new ErrorResponse(500, ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
         return Mono.just(ResponseEntity
                 .internalServerError()
-                .body(ErrorResponse.of(500, "Internal Server Error!!!")));
+                .body(ApiResponse.fail(errorResponse)));
     }
 }
