@@ -44,6 +44,12 @@ public class Order extends BaseEntity {
         this.status = status;
     }
 
-    
+    public static Order pending(Long userId, Long productId) {
+        Order order = new Order();
+        order.status = "PENDING";
+        return order;
+    }
+
+
 
 }

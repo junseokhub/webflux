@@ -1,7 +1,9 @@
-package com.mvc.load.order;
+package com.mvc.load.order.service;
 
 import com.mvc.load.common.exception.BusinessException;
 import com.mvc.load.common.exception.ErrorCode;
+import com.mvc.load.order.Order;
+import com.mvc.load.order.OrderRepository;
 import com.mvc.load.product.Product;
 import com.mvc.load.product.ProductService;
 import com.mvc.load.user.User;
@@ -12,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService {
+public class PessimisticOrderService implements OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductService productService;

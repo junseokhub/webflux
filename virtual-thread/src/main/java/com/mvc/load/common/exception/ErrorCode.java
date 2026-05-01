@@ -16,7 +16,8 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
     PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "Password mismatch"),
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "Product not found"),
-    PRODUCT_OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "Product out of stock");
+    PRODUCT_OUT_OF_STOCK(HttpStatus.CONFLICT, "Product out of stock"),
+    PRODUCT_ORDER_FAILED(HttpStatus.CONFLICT, "Product order failed");
 
 
 

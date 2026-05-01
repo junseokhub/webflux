@@ -18,7 +18,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponse> register(@RequestBody AuthRequest request) {
-        return ResponseEntity.ok(authService.register(request.username(), request.password()));
+        return ResponseEntity.status(201).body(authService.register(request.username(), request.password()));
     }
 
     @PostMapping("/login")

@@ -21,7 +21,7 @@ public class AuthService {
 
     @Transactional
     public TokenResponse register(String username, String password) {
-        if (userService.findByUsername(username).getUsername() != null) {
+        if (userService.existsByUsername(username)) {
             throw new BusinessException(ErrorCode.USER_ALREADY_EXISTS);
         }
         User user = userService.createUser(username, password);
