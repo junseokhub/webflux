@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProjectService projectService;
+    private final ProductService productService;
 
     @PostMapping
     public ResponseEntity<Product> createProduct(
@@ -22,13 +22,13 @@ public class ProductController {
             @AuthenticationPrincipal User user
             ) {
         return ResponseEntity.status(201)
-                .body(projectService.createProduct(
+                .body(productService.createProduct(
                         user.getId(), request.name(), request.price(), request.stock()
                 ));
     }
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.ok(projectService.findAllProducts());
+        return ResponseEntity.ok(productService.findAllProducts());
     }
 }

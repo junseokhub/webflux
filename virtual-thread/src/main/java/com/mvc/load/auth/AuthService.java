@@ -4,9 +4,8 @@ import com.mvc.load.auth.dto.TokenResponse;
 import com.mvc.load.common.exception.BusinessException;
 import com.mvc.load.common.exception.ErrorCode;
 import com.mvc.load.common.jwt.JwtProvider;
-import com.mvc.load.user.Role;
 import com.mvc.load.user.User;
-import com.mvc.load.user.UserRepository;
+import com.mvc.load.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,29 +15,22 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
     @Transactional
     public TokenResponse register(String username, String password) {
-        if (userRepository.findByUsername(username).isPresent()) {
+        if (userService.findByUsername(username).getUsername() != null) {
             throw new BusinessException(ErrorCode.USER_ALREADY_EXISTS);
         }
-        User user = User.builder()
-                .username(username)
-                .password(passwordEncoder.encode(password))
-                .role(Role.USER)
-                .build();
-
-        userRepository.save(user);
+        User user = userService.createUser(username, password);
         return generateTokens(user);
     }
 
     @Transactional(readOnly = true)
     public TokenResponse login(String username, String password) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        User user = userService.findByUsername(username);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);

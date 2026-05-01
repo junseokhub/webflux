@@ -15,7 +15,8 @@ public enum ErrorCode {
     USER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "User already exists"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
     PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "Password mismatch"),
-    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "Product not found"),;
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "Product not found"),
+    PRODUCT_OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "Product out of stock");
 
 
 
